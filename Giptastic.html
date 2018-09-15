@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="./assets/css/style.css">
+<script src="./assets/todolist.js/todolist.js"></script>
+<cript src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+    <div id="myDIV" class="header">
+            <!-- Movies will Get Dumped Here -->
+          <div id="movies-view"></div>
+
+          <!-- Rendered Buttons will get Dumped Here  -->
+          <div id="buttons-view"></div>
+    <!-- Movies will Get Dumped Here -->
+    <div id="movies-view"></div>
+  
+    <!-- Rendered Buttons will get Dumped Here  -->
+    <div id="buttons-view"></div>
+      <h2 style="margin:5px">Giptastic</h2>
+      <h3>To Play follow the steps below</h3>
+      <h4>Step-One Write your Favorite Film and click on "Submit"</h4>
+      <h4>Step-Two Click the name onthe film above</h4>
+      <h4>Step-Three hen Click on the name of the film below</h4>
+        <input type="text" id="movie-input">
+  
+        <!-- Button triggers new movie to be added -->
+        <input id="add-movie" type="submit" class="addBtn" >
+        <h2>Write your favorite Film!!!</h2>
+
+    <button data-animal="boats">Titanic</button>
+    <button data-animal="kings">The Lord of the rings</button>
+    <button data-animal="pirates">Pirates</button>
+    <button data-animal="magician">Harry Potter</button>
+    <button data-animal="aliens">"Star Wars</button>
+    <button data-animal="dinosaurs">Jurassic Park</button>
+    <button data-animal="sipder-man">Spider-man</button>
+    <button data-animal="nemo">Nemo</button>
+    <button data-animal="Independence day">Independence day</button>
+    <button data-animal="Da vinci code">The Da Vinci Code</button>
+    <button data-animal="ET">ET</button>
+    <button data-animal="Narnia">Chronicles of Narnia</button>
+    <button data-animal="Forrest Gump">Forrest Gump</button>
+    <button data-animal="Ready Player One">Ready Player One</button>
+    <button data-animal="Ice Age">Ice Age</button>
+    <button data-animal="oo7">007"</button>
+    <button data-animal="Men in Black">Men in Black</button>
+    <button data-animal="Jurassic World">Jurassic World</button>
+    <button data-animal="Think">Think</button>
+    <button data-animal="Ghost">Ghost</button>
+    <button data-animal="Monster">Monster</button>
+    <div id="gifs-appear-here">
+    </div> 
+    <h1>Click on the name of the film!!!</h1>    
+        <script type="text/javascript">
+          // Initial array of movies
+          var movies = [];
+    
+          // displayMovieInfo function re-renders the HTML to display the appropriate content
+          function displayMovieInfo() {
+    
+            var movie = $(this).attr("data-name");
+            var queryURL = "https://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy";
+    
+            // Creating an AJAX call for the specific movie button being clicked
+            $.ajax({
+              url: queryURL,
+              method: "GET"
+            }).then(function(response) {
+    
+              // Creating a div to hold the movie
+              var movieDiv = $("<div class='movie'>");
+    
+              // Storing the rating data
+              var rating = response.Rated;
+    
+              // Creating an element to have the rating displayed
+              var pOne = $("<p>").text("Rating: " + rating);
+    
+              // Displaying the rating
+              movieDiv.append(pOne);
+    
+              // Storing the release year
+              var released = response.Released;
+    
+              // Creating an element to hold the release year
+              var pTwo = $("<p>").text("Released: " + released);
+    
+              // Displaying the release year
+              movieDiv.append(pTwo);
+    
+              // Storing the plot
+              var plot = response.Plot;
+    
+              // Creating an element to hold the plot
+              var pThree = $("<p>").text("Plot: " + plot);
+    
+              // Appending the plot
+              movieDiv.append(pThree);
+    
+              // Retrieving the URL for the image
+              var imgURL = response.Poster;
+    
+              // Creating an element to hold the image
+              var image = $("<img>").attr("src", imgURL);
+    
+              // Appending the image
+              movieDiv.append(image);
+    
+              // Putting the entire movie above the previous movies
+              $("#movies-view").prepend(movieDiv);
+            });
+    
+          }
+    
+          // Function for displaying movie data
+          function renderButtons() {
+    
+            // Deleting the movies prior to adding new movies
+            // (this is necessary otherwise you will have repeat buttons)
+            $("#buttons-view").empty();
+    
+            // Looping through the array of movies
+            for (var i = 0; i < movies.length; i++) {
+    
+              // Then dynamicaly generating buttons for each movie in the array
+              // This code $("<button>") is all jQuery needs to create the beginning and end tag. (<button></button>)
+              var a = $("<button>");
+              // Adding a class of movie-btn to our button
+              a.addClass("movie-btn");
+              // Adding a data-attribute
+              a.attr("data-name", movies[i]);
+              // Providing the initial button text
+              a.text(movies[i]);
+              // Adding the button to the buttons-view div
+              $("#buttons-view").append(a);
+            }
+          }
+    
+          // This function handles events where a movie button is clicked
+          $("#add-movie").on("click", function(event) {
+            event.preventDefault();
+            // This line grabs the input from the textbox
+            var movie = $("#movie-input").val().trim();
+    
+            // Adding movie from the textbox to our array
+            movies.push(movie);
+    
+            // Calling renderButtons which handles the processing of our movie array
+            renderButtons();
+          });
+    
+          // Adding a click event listener to all elements with a class of "movie-btn"
+          $(document).on("click", ".movie-btn", displayMovieInfo);
+    
+          // Calling the renderButtons function to display the intial buttons
+          renderButtons();
+          // Adding click event listen listener to all buttons
+    $("button").on("click", function() {
+      // Grabbing and storing the data-animal property value from the button
+      var animal = $(this).attr("data-animal");
+
+      // Constructing a queryURL using the animal name
+      var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+        animal + "&api_key=dc6zaTOxFJmzC&limit=10";
+
+      // Performing an AJAX request with the queryURL
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      })
+        // After data comes back from the request
+        .then(function(response) {
+          console.log(queryURL);
+
+          console.log(response);
+          // storing the data from the AJAX request in the results variable
+          var results = response.data;
+
+          // Looping through each result item
+          for (var i = 0; i < results.length; i++) {
+
+            // Creating and storing a div tag
+            var animalDiv = $("<div>");
+
+            // Creating a paragraph tag with the result item's rating
+            var p = $("<p>").text("Rating: " + results[i].rating);
+
+            // Creating and storing an image tag
+            var animalImage = $("<img>");
+            // Setting the src attribute of the image to a property pulled off the result item
+            animalImage.attr("src", results[i].images.fixed_height.url);
+
+            // Appending the paragraph and image tag to the animalDiv
+            animalDiv.append(p);
+            animalDiv.append(animalImage);
+
+            // Prependng the animalDiv to the HTML page in the "#gifs-appear-here" div
+            $("#gifs-appear-here").prepend(animalDiv);
+          }
+        });
+    });
+        </script>      
+    </div>
+</body>
+</html>
